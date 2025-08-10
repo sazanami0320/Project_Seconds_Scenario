@@ -103,10 +103,10 @@ def update_index(asset_dir: Path, art_dir_name: Optional[str]):
         art_dir = asset_dir
     else:
         art_dir = asset_dir / art_dir_name
-    index['bg'] = index_hierarchy(art_dir / 'bg', PIC_SUFFIXES)
+    index['bg'] = index_hierarchy(art_dir / 'bgimage', PIC_SUFFIXES)
     index['cg'] = index_hierarchy(art_dir / 'cg', PIC_SUFFIXES)
-    index['fg'] = index_hierarchy(art_dir / 'fg', PIC_SUFFIXES)
-    index['se'] = index_simple_dir(art_dir / 'se', AUDIO_SUFFIXES)
+    index['fg'] = index_hierarchy(art_dir / 'fgiamge', PIC_SUFFIXES)
+    index['se'] = index_simple_dir(art_dir / 'sound', AUDIO_SUFFIXES)
     # Deal with stance of fg specially
     chara_pattern = re.compile(r'([a-zA-z]+)(\d+)')
     new_fg_dict = {}
@@ -134,7 +134,7 @@ def update_index(asset_dir: Path, art_dir_name: Optional[str]):
         pickle.dump(index, f)
     return index
 
-def get_index(asset_dir:Path, art_dir_name: Optional[str]='游戏资产'):
+def get_index(asset_dir:Path, art_dir_name: Optional[str]='assets'):
     update_flag = False
     index_file = asset_dir / 'index.pickle'
     if index_file.exists():
