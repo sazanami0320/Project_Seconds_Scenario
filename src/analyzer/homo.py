@@ -30,6 +30,10 @@ class HomoSapiensText:
             return f"{content}运镜"
         elif system_type == 'font':
             return f"{content}字体"
+        elif system_type == 'filter':
+            return f"{content}滤镜"
+        elif system_type == 'music':
+            return f"{content}音乐"
         elif system_type == 'reset':
             if content == 'move':
                 return '重置运镜'

@@ -218,7 +218,10 @@ class Stage:
     def tick_line(self, line_id: str, speaker_id: str, render=True):
         for key in self.stance_counter.keys():
             self.stance_counter[key] = self.stance_counter[key] + 1
-        if self.stance_counter[speaker_id] > 3:
+        if speaker_id not in self.stance_counter: 
+            # I'm not sure whether this logic is right.
+            return
+        elif self.stance_counter[speaker_id] > 3:
             self.stance_counter[speaker_id] = 0
             stance_command = (self.current_stage[speaker_id], self.current_kyori[speaker_id])
             update_commands = list(filter(lambda x: x.command_type == 'update', self.stack))

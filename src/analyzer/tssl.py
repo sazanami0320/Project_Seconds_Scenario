@@ -94,28 +94,32 @@ class TSSL:
             self.lineno = lineno + 1
             src = f"{filename}:{self.lineno}"
             line = line.strip()
-            if len(line) == 0:
-                continue
-            elif line.startswith(';'):
-                if line.startswith(';;'): # Omote comment
-                    builder.comment(src, line[2:].strip())
-            elif line.startswith('['):
-                assert line.endswith(']') # Butai Shikake
-                lefts, rights = zip(*self.parse_systems(src, line))
-                builder.systems(src, lefts, rights)
-            else:
-                spilt_point = line.index(' ')
-                jinbutsu = line[:spilt_point]
-                chara, alias, expression = self.parse_jinbutsu(src, jinbutsu)
+            try:
+                if len(line) == 0:
+                    continue
+                elif line.startswith(';'):
+                    if line.startswith(';;'): # Omote comment
+                        builder.comment(src, line[2:].strip())
+                elif line.startswith('['):
+                    assert line.endswith(']') # Butai Shikake
+                    lefts, rights = zip(*self.parse_systems(src, line))
+                    builder.systems(src, lefts, rights)
+                else:
+                    spilt_point = line.index(' ')
+                    jinbutsu = line[:spilt_point]
+                    chara, alias, expression = self.parse_jinbutsu(src, jinbutsu)
 
-                serifu = line[spilt_point + 1:]
-                systems = None
-                if serifu.endswith(']'):
-                    spilt_point = serifu.index('[')
-                    system_str = serifu[spilt_point:]
-                    systems = self.parse_systems(src, system_str)
-                    serifu = serifu[:spilt_point]
-                builder.line(src, chara, serifu, alias, expression, systems)
+                    serifu = line[spilt_point + 1:]
+                    systems = None
+                    if serifu.endswith(']'):
+                        spilt_point = serifu.index('[')
+                        system_str = serifu[spilt_point:]
+                        systems = self.parse_systems(src, system_str)
+                        serifu = serifu[:spilt_point]
+                    builder.line(src, chara, serifu, alias, expression, systems)
+            except Exception as e:
+                print(f"\033[31;1;4mAt {src}:\033[0m")
+                raise e from None
         return builder.finish()
     
     def decode(self, obj):
