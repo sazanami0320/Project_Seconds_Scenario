@@ -22,8 +22,6 @@ class HomoSapiensText:
         elif system_type == 'tachie':
             if self.exp_flag:
                 return f"{content['cid']}: {content['exp']}"
-            else:
-                return f"{content['cid']}"
         elif system_type == 'hide':
             return f"隐藏{content}立绘"
         elif system_type == 'move':
