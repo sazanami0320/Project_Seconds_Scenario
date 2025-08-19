@@ -65,7 +65,7 @@ class HomoSapiensText:
                 formatted_list.append(formatted_line)
             elif item['type'] == 'systems':
                 system_str_list = [self._format_system(system) for system in item['contents']]
-                formatted_list.append(f"（{', '.join(system_str_list)}）")
+                formatted_list.append(f"（{', '.join(filter(None, system_str_list))}）")
             else:
                 raise SourcedException(item['src'], f"无法识别AST节点类型{item['type']}。")
         return '\n'.join(formatted_list)
