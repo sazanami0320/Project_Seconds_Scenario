@@ -205,7 +205,8 @@ class KAGMaker:
             self.writeln('@resetfont')
             self.font_cache = None
         if self.voice_flag:
-            self.writeln('@endvo')
+            # Included in [w]
+            # self.writeln('@endvo')
             self.voice_flag = False
 
     def enter_cg_mode(self):

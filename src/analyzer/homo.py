@@ -17,6 +17,8 @@ class HomoSapiensText:
             return f"{content}转场"
         elif system_type == 'sound':
             return f"{content}音效"
+        elif system_type == 'bgm':
+            return f"{content} bgm"
         elif system_type == 'effect':
             return f"{content}"
         elif system_type == 'tachie':

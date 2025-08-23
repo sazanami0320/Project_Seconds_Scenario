@@ -71,7 +71,7 @@ class Stage:
                 raise RuntimeError('Impossible')
         self.stack.clear()
         if render:
-            comment_flag = len(command_line) > 5
+            comment_flag = len(command_capsule) > 5
             if comment_flag:
                 self.writeln(';Tachie segment start')
             for command_line in command_capsule:
@@ -209,7 +209,8 @@ class Stage:
         if len(possible_fgs) == 1:
             return possible_fgs[0]
         first_choice = self.ransu % len(possible_fgs)
-        if chara_id in self.current_stage and self.stance_record[chara_id] == possible_fgs[first_choice].name:
+        if chara_id in self.current_stage and chara_id in self.stance_record and \
+            self.stance_record[chara_id] == possible_fgs[first_choice].name:
             return possible_fgs[(first_choice + 1) % len(possible_fgs)]
         else:
             return possible_fgs[first_choice]
@@ -218,10 +219,7 @@ class Stage:
     def tick_line(self, line_id: str, speaker_id: str, render=True):
         for key in self.stance_counter.keys():
             self.stance_counter[key] = self.stance_counter[key] + 1
-        if speaker_id not in self.stance_counter: 
-            # I'm not sure whether this logic is right.
-            return
-        elif self.stance_counter[speaker_id] > 3:
+        if speaker_id in self.stance_counter and self.stance_counter[speaker_id] > 3:
             self.stance_counter[speaker_id] = 0
             stance_command = (self.current_stage[speaker_id], self.current_kyori[speaker_id])
             update_commands = list(filter(lambda x: x.command_type == 'update', self.stack))
