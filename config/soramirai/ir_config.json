@@ -1,11 +1,9 @@
 {
     "voiced_characters": [
-        "aoi",
-        "mio",
-        "tomori",
-        "yukari",
-        "众人"
+        "shizune",
+        "tsubasa",
+        "yukie",
+        "kokoro"
     ],
-    "voice_key": "Demo 音频",
-    "default_voice_version": "cn"
+    "default_voice_version": "jp"
 }

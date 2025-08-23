@@ -64,36 +64,26 @@ def index_hierarchy(hierarchical_dir: Path, accept_suffixes: Optional[List[str]]
 def enumerate_zip_file(zip_path: Path, accept_suffixes: List[str]=[]) -> List[Path]:
     with ZipFile(zip_path) as zip:
         vitrual_assets = map(lambda name: zip_path / name, 
+                             filter(lambda name: '__MACOSX' not in name,                # God Damns Apple 
                              filter(lambda name: name.split('.')[-1] in accept_suffixes, 
-                                map(lambda info: info.filename, zip.infolist())))
+                                map(lambda info: info.filename, zip.infolist()))))
     return list(vitrual_assets)
 
 def index_voice(current_dir: Path, result_dict: Dict[str, Dict]):
     for zip_file in current_dir.iterdir():
-        if zip_file.is_dir():
-            index_voice(zip_file, result_dict)
-            continue
-        elif zip_file.suffix != '.zip':
+        if zip_file.suffix != '.zip':
             continue
         virtual_assets = enumerate_zip_file(zip_file, AUDIO_SUFFIXES)
         if len(virtual_assets) == 0:
             continue
         # Well, the naming sense is...
         short_key = zip_file.stem
-        long_key = ''
-        start_dir = zip_file.parent.absolute()
-        while start_dir.name != 'voice':
-            long_key = start_dir.name + long_key
-            start_dir = start_dir.parent.absolute()
         assets_tri = list(map(lambda va: (va.stem.split('_')[2], va.stem.split('_')[1], va), virtual_assets))
         versions = set(map(lambda tri: tri[0], assets_tri))
-        if long_key not in result_dict:
-            result_dict[long_key] = {}
-        target_dict = result_dict[long_key]
         for version in versions:
-            if version not in target_dict:
-                target_dict[version] = {}
-            target_dict[version][short_key] = dict(map(lambda tri: (tri[1], tri[2]),
+            if version not in result_dict:
+                result_dict[version] = {}
+            result_dict[version][short_key] = dict(map(lambda tri: (tri[1], tri[2]),
                                         filter(lambda tri: tri[0] == version, assets_tri)))
 
 
@@ -103,10 +93,10 @@ def update_index(asset_dir: Path, art_dir_name: Optional[str]):
         art_dir = asset_dir
     else:
         art_dir = asset_dir / art_dir_name
-    index['bg'] = index_hierarchy(art_dir / 'bgimage', PIC_SUFFIXES)
+    index['bg'] = index_simple_dir(art_dir / 'bgimage', PIC_SUFFIXES)
     index['cg'] = index_hierarchy(art_dir / 'cg', PIC_SUFFIXES)
-    index['fg'] = index_hierarchy(art_dir / 'fgiamge', PIC_SUFFIXES)
-    index['se'] = index_simple_dir(art_dir / 'sound', AUDIO_SUFFIXES)
+    index['fg'] = index_hierarchy(art_dir / 'fgimage', PIC_SUFFIXES)
+    index['se'] = index_simple_dir(art_dir / 'se', AUDIO_SUFFIXES)
     # Deal with stance of fg specially
     chara_pattern = re.compile(r'([a-zA-z]+)(\d+)')
     new_fg_dict = {}

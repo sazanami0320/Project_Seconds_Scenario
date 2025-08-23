@@ -29,15 +29,13 @@ class Unbabel:
         with (map_path / 'ir_config.json').open('r', encoding='utf-8') as f:
             ir_config = json.load(f)
         self.voiced_charas = ir_config['voiced_characters']
-        if ir_config['voice_key'] not in index['voice']:
-            raise RuntimeError(f"Fail to find voice by {ir_config['voice_key']}")
         if 'default_voice_version' in ir_config:
             voice_version = ir_config['default_voice_version']
         else:
             voice_version = 'cn' # Legacy for demo...
-        if voice_version not in index['voice'][ir_config['voice_key']]:
+        if voice_version not in index['voice']:
             raise RuntimeError(f"Fail to find voice of {voice_version} version.")
-        self.voice_map = index['voice'][ir_config['voice_key']][voice_version]
+        self.voice_map = index['voice'][voice_version]
         self.asset_index = index
         self._expand_index()
     
