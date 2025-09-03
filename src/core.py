@@ -28,15 +28,19 @@ def analyze(proj_name: str, target_file: Path, base_class):
 
 def output_tokens(instance, objs, titles, targe_file, *args, count=False, **kwargs):
     json_flag = isinstance(instance, ASTScript)
+    total_count = 0
     with targe_file.open('w', encoding='utf-8') as f:
         if json_flag:
             f.write('[\n')
         for index, (title, meta_obj) in enumerate(zip(titles, objs)):
             if count:
                 word_count = valid_word_count(meta_obj)
+                total_count += word_count
                 print(f"{title}: {word_count} characters processed.")
             f.write(instance.decode(meta_obj, *args, **kwargs))
             if json_flag and index < len(objs) - 1:
                 f.write(',\n')
         if json_flag:
             f.write(']\n')
+    if count:
+        print(f"{total_count} characters processed in total.")
