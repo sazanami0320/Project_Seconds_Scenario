@@ -41,5 +41,6 @@ def to_ir(proj_name: str, objs: list, titles: list, suppress_level: int, ask_hoo
         'ask_cg': partial(ask_hook, 'CG', {'CG': asset_index['cg'], '背景': asset_index['bg']}),
         'ask_fg': expand_map_key_wrapper(partial(ask_hook, '立绘', {'角色表情': asset_index['fg']})),
         'ask_se': partial(ask_hook, '音效', {'音效': asset_index['se']}),
+        'ask_vc': lambda x: None
     }
     objs = ir_compiler(objs, titles, suppress_level=suppress_level, **hooks)

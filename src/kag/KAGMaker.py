@@ -48,7 +48,7 @@ class KAGMaker:
                     if chara_id.startswith('$'): # Take this as an NPC
                         self.writeln(f"@npc id=\"{item['alias']}\"")
                     elif chara_id == '旁白':
-                        pass
+                        self.writeln(f"@r")
                     else:
                         if chara_id in self.name_map:
                             chara_id = self.name_map[chara_id]
