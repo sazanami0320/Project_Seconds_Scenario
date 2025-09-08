@@ -38,6 +38,12 @@ class KAGMaker:
             for item in irs[chapter_index]:
                 if item['type'] == 'comment':
                     self.writeln(f";[剧本注]{item['content']}")
+                elif item['type'] == 'macro':
+                    macro_name = item['name']
+                    if macro_name == 'setclothing':
+                        self.stage.set_clothing(item['target'], item['clothing'])
+                    else:
+                        raise RuntimeError(f"Cannot recognize macro type {macro_name}.")
                 elif item['type'] == 'line':
                     self.pre_line_hook()
                     chara_id = item['cid']

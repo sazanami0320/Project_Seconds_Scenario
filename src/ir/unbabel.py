@@ -117,7 +117,7 @@ class Unbabel:
             unmapped_sound = set()
             unmapped_voice = set()
         for item in obj:
-            if item['type'] == 'comment':
+            if item['type'] == 'comment' or item['type'] == 'macro':
                 if not dry_run:
                     result.append(item)
             elif item['type'] == 'line':

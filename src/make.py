@@ -5,6 +5,7 @@ from sys import argv
 from index import get_index
 import json
 from core import WORKSPACE, SCENARIO_DIR, CONFIG_DIR, OUTPUT_DIR, analyze, output_tokens
+from utils import sort_chapters
 
 if __name__ == '__main__':
     if len(argv) != 2 and len(argv) != 3:
@@ -27,6 +28,7 @@ if __name__ == '__main__':
         output_folder.mkdir(parents=True)
 # Raw scenario => AST
     titles = list(map(lambda path: path.stem, sources))
+    titles, objs = sort_chapters(titles, objs)
     output_tokens(HomoSapiensText(), objs, titles, output_folder / f"{proj_name}.txt", count=True)
     output_tokens(HomoSapiensText(print_expression=True), objs, titles, output_folder / f"{proj_name}_with_expressions.txt")
     output_tokens(ASTScript(), objs, titles, output_folder / f"{proj_name}_ast.json")

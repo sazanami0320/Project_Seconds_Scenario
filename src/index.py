@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import Dict, List, Optional
 import pickle
-import re
 from zipfile import ZipFile
 
 PIC_SUFFIXES = ['png', 'jpg', 'jpeg', 'bmp', 'raw']
@@ -95,27 +94,26 @@ def update_index(asset_dir: Path, art_dir_name: Optional[str]):
         art_dir = asset_dir / art_dir_name
     index['bg'] = index_simple_dir(art_dir / 'bgimage', PIC_SUFFIXES)
     index['cg'] = index_hierarchy(art_dir / 'cg', PIC_SUFFIXES)
-    index['fg'] = index_hierarchy(art_dir / 'fgimage', PIC_SUFFIXES)
+    index['fg'] = index_hierarchy(art_dir / 'fgimage', PIC_SUFFIXES, max_level=3)
     index['se'] = index_simple_dir(art_dir / 'se', AUDIO_SUFFIXES)
     # Deal with stance of fg specially
-    chara_pattern = re.compile(r'([a-zA-z]+)(\d+)')
-    new_fg_dict = {}
-    for key, value in index['fg'].items():
-        match_object = chara_pattern.fullmatch(key)
-        if match_object is None:
-            new_fg_dict[key] = value
-        else:
-            chara_name, stance = match_object.groups()
-            if chara_name not in new_fg_dict:
-                new_fg_dict[chara_name] = {}
-            # list the same expression with different stance
-            # This section of code can be vulnerable to asset directory structure
-            for expression, path in value.items():
-                if expression in new_fg_dict[chara_name]:
-                    new_fg_dict[chara_name][expression].append(path)
+    for chara_id, clothing_dict in index['fg'].items():
+        new_charadict = {}
+        for clothing_id, stance_dict in clothing_dict.items():
+            new_subdict = {}
+            for stance_id, expression_dict in stance_dict.items():
+                for expression_id, fg_file in expression_dict.items():
+                    if expression_id in new_subdict:
+                        new_subdict[expression_id][stance_id] = fg_file
+                    else:
+                        new_subdict[expression_id] = {stance_id: fg_file}
+            for expression_id, stance_dict in new_subdict.items():
+                if expression_id in new_charadict:
+                    new_charadict[expression_id][clothing_id] = stance_dict
                 else:
-                    new_fg_dict[chara_name][expression] = [path]
-    index['fg'] = new_fg_dict
+                    new_charadict[expression_id] = {clothing_id: stance_dict}
+            index['fg'][chara_id] = new_charadict
+
     # Deal with voice specially
     new_voice_dict = {}
     index_voice(art_dir / 'voice', new_voice_dict)

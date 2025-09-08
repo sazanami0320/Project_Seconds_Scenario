@@ -3,7 +3,8 @@ from core import WORKSPACE, CONFIG_DIR, analyze, output_tokens
 from index import get_index
 from ir import Unbabel
 from pathlib import Path
-from functools import partial, wraps
+from functools import partial
+from utils import sort_chapters
 
 def to_ast(target_folder: Path):
     proj_name = target_folder.stem
@@ -17,6 +18,7 @@ def to_ast(target_folder: Path):
     if not output_folder.exists():
         output_folder.mkdir(parents=True)
     titles = list(map(lambda path: path.stem, sources))
+    titles, objs = sort_chapters(titles, objs)
     output_tokens(HomoSapiensText(), objs, titles, output_folder / f"{proj_name}.txt", count=True)
     output_tokens(ASTScript(), objs, titles, output_folder / f"{proj_name}_ast.json")
     return objs, titles
@@ -36,10 +38,25 @@ def to_ir(proj_name: str, objs: list, titles: list, suppress_level: int, ask_hoo
         def wrapper(*args, **kwargs):
             return expand_map_key(func(*args, **kwargs))
         return wrapper
+    def squash_fg(fg_index):
+        def squash_dict(target_dict):
+            ret = []
+            for value in target_dict.values():
+                if type(value) is dict:
+                    ret.extend(squash_dict(value))
+                else:
+                    ret.append(value)
+            return ret
+        new_fg_index = {}
+        for chara_id, exp_dict in fg_index.items():
+            new_fg_index[chara_id] = {}
+            for exp_id, stance_dict in exp_dict.items():
+                new_fg_index[chara_id][exp_id] = squash_dict(stance_dict)
+        return new_fg_index
     hooks = {
         'ask_bg': partial(ask_hook, '背景', {'背景': asset_index['bg'], 'CG': asset_index['cg']}),
         'ask_cg': partial(ask_hook, 'CG', {'CG': asset_index['cg'], '背景': asset_index['bg']}),
-        'ask_fg': expand_map_key_wrapper(partial(ask_hook, '立绘', {'角色表情': asset_index['fg']})),
+        'ask_fg': expand_map_key_wrapper(partial(ask_hook, '立绘', {'角色表情': squash_fg(asset_index['fg'])})),
         'ask_se': partial(ask_hook, '音效', {'音效': asset_index['se']}),
         'ask_vc': lambda x: None
     }

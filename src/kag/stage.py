@@ -18,6 +18,7 @@ class Stage:
         self.antei_level = antei_level
         self.chara_heights = heights
         self.writeln = writeln
+        self.chara_clothing = {}
         # Lazy!
         self.occupation_mode = 0
         self.stage_occupation = [None]
@@ -117,7 +118,7 @@ class Stage:
             chara_pos = self.markers[self.occupation_mode][layer_index]
             # This line depends on the naming strategy of fg asset, which is not a good choice.
             # TODO: Add kyori information into it.
-            fg_file = self.pick_new_stance(chara_id, exp_id)
+            fg_file = self.pick_fg_file(chara_id, exp_id)
             self.stance_record[chara_id] = fg_file.name
             self.stance_counter[chara_id] = 0
             command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" "
@@ -135,7 +136,7 @@ class Stage:
                 # TODO: Add kyori information into it.
             else:
                 exp_id, kyori = command
-            fg_file = self.pick_new_stance(chara_id, exp_id)
+            fg_file = self.pick_fg_file(chara_id, exp_id)
             self.stance_record[chara_id] = fg_file.name
             self.stance_counter[chara_id] = 0
             command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" " 
@@ -182,7 +183,8 @@ class Stage:
             if chara_id is None:
                 continue
             exp_id = self.current_stage[chara_id]
-            expected_fg_file = list(filter(lambda path: path.name == self.stance_record[chara_id], self.asset_index['fg'][chara_id][exp_id]))
+            clothing_id = self.chara_clothing[chara_id]
+            expected_fg_file = list(filter(lambda path: path.name == self.stance_record[chara_id], self.asset_index['fg'][chara_id][exp_id][clothing_id].values()))
             if len(expected_fg_file) != 1:
                 raise RuntimeError(f"Try to find stance {self.stance_record[chara_id]}, found out to find {expected_fg_file}")
             fg_file = expected_fg_file[0]
@@ -204,16 +206,25 @@ class Stage:
         self.stance_record.clear()
         self.stack.clear()
 
-    def pick_new_stance(self, chara_id: str, exp_id: str):
-        possible_fgs = self.asset_index['fg'][chara_id][exp_id]
+    def set_clothing(self, chara_id: str, clothing_id: str):
+        self.chara_clothing[chara_id] = clothing_id
+
+    def pick_fg_file(self, chara_id: str, exp_id: str):
+        if chara_id not in self.chara_clothing:
+            raise RuntimeError(f"Fail to find clothing for {chara_id}.")
+        cloth_id = self.chara_clothing[chara_id]
+        possible_fgs = self.asset_index['fg'][chara_id][exp_id][cloth_id]
+        if len(possible_fgs) == 0:
+            raise RuntimeError(f"Fail to find suitable fg for {chara_id} with cloth {cloth_id} and expression {exp_id}")
         if len(possible_fgs) == 1:
-            return possible_fgs[0]
+            return list(possible_fgs.values())[0]
+        key_list = sorted(list(possible_fgs.keys()))
         first_choice = self.ransu % len(possible_fgs)
         if chara_id in self.current_stage and chara_id in self.stance_record and \
-            self.stance_record[chara_id] == possible_fgs[first_choice].name:
-            return possible_fgs[(first_choice + 1) % len(possible_fgs)]
+            self.stance_record[chara_id] == possible_fgs[key_list[first_choice]].name:
+            return possible_fgs[key_list[(first_choice + 1) % len(possible_fgs)]]
         else:
-            return possible_fgs[first_choice]
+            return possible_fgs[key_list[first_choice]]
         
 
     def tick_line(self, line_id: str, speaker_id: str, render=True):

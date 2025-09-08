@@ -67,6 +67,22 @@ class ASTBuilder:
             line['alias'] = alias
         self.content.append(line)
     
+    def macro(self, src: str, macro_content:str):
+        macro_parts = macro_content.split(' ')
+        macro_name = macro_parts[0]
+        macro = {
+            'type': 'macro',
+            'name': macro_name
+        }
+        if macro_name.lower() == 'setclothing':
+            if len(macro_parts) != 3:
+                raise SourcedException(src, 'Illegal setclothing Macro!')
+            macro['target'] = macro_parts[1]
+            macro['clothing'] = macro_parts[2]
+        else:
+            raise SourcedException(src, f"Fail to resolve macro {macro_content}")
+        self.content.append(macro)
+    
     def systems(self, src: str, responsibles: str | List[str], works: Any):
         if isinstance(responsibles, str):
             responsibles = [responsibles]

@@ -104,6 +104,8 @@ class TSSL:
                     assert line.endswith(']') # Butai Shikake
                     lefts, rights = zip(*self.parse_systems(src, line))
                     builder.systems(src, lefts, rights)
+                elif line.startswith('#'):
+                    builder.macro(src, line[1:].strip())
                 else:
                     spilt_point = line.index(' ')
                     jinbutsu = line[:spilt_point]
