@@ -1,3 +1,4 @@
+#setclothing tsubasa 3
 [background=domitory_night]
 kenichi …………唉。
 0 我不禁叹了一口气，将手中的控制器随手扔在桌面上。

@@ -1,3 +1,5 @@
+#setclothing shizune 2
+#setclothing tsubasa 2
 0 一周后的周日。
 0 我在宿舍的床上醒来，还没来得及睁开眼睛。
 0 雨的声音涌入我的脑海。

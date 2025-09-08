@@ -1,3 +1,5 @@
+#setclothing yukie 1
+#setclothing tsubasa 1
 0 “嗡~嗡~”
 0 急速旋转的声音，机器运转的声音。
 0 那声音不似蝉鸣般恼人，并非急躁的叫嚷，而是更为深沉的低吼。

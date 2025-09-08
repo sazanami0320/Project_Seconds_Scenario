@@ -1,3 +1,5 @@
+#setclothing shizune 1
+#setclothing tsubasa 1
 [background=教室内部]
 0 第二天。
 [sound=end_class]
