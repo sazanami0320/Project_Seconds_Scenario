@@ -155,6 +155,7 @@ class Stage:
         for chara_id in commands.keys():
             layer_index = self.stage_occupation.index(chara_id)
             self.stance_record.pop(chara_id)
+            self.stance_counter.pop(chara_id)
             if self.occupation_mode >= self.antei_level:
                 self.occupation_mode -= 1
                 self.stage_occupation.pop(layer_index)

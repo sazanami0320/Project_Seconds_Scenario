@@ -95,6 +95,7 @@ class MakeApp(App):
         # GUI is only used for asset mapping.
         # You can use CLI to generate KAG scripts.
         # (If you want it then you have to PR it)
+        self.reset()
     
     # The functions below all runs in a different thread and should be taken care of as the result.
     def wrapped_call(self, func, *args, **kwargs) -> Tuple[bool, Any]:

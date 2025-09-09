@@ -28,6 +28,7 @@ class AssetMatcher(Widget):
     BINDINGS = [
         Binding('enter', 'match_asset', '确认', priority=True),
         ('i', 'ignore_asset', '忽略'),
+        ('I', 'ignore_all', '忽略全部'),
         ('c', 'revert', '撤销')
     ]
 
@@ -96,6 +97,11 @@ class AssetMatcher(Widget):
     
     def action_ignore_asset(self):
         self.next_match()
+
+    def action_ignore_all(self):
+        self.match_set.clear()
+        self.disabled = True
+        self.post_message(self.MatchFinish(self.match_result))
 
     def action_revert(self):
         pass

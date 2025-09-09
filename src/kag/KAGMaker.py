@@ -153,7 +153,7 @@ class KAGMaker:
         elif system_type == 'tachie':
             if content['exp'].startswith('<'):
                 return
-            self.stage.parse_chara_command(content['cid'], content['exp'].split('_')[1])
+            self.stage.parse_chara_command(content['cid'], '_'.join(content['exp'].split('_')[1:]))
         elif system_type == 'hide':
             if content == '全部':
                 self.writeln('@backlay')
