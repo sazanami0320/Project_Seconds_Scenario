@@ -33,6 +33,9 @@ class Stage:
         self.asset_index = asset_index
         self.ransu = None
 
+    def _get_chara_height(self, chara_id: str) -> int:
+        return self.chara_heights[chara_id][self.chara_clothing[chara_id]]
+
     def stack_command(self, command_type: str, chara_id: str, command: str):
         if len(self.stack) > 0 and self.stack[-1].command_type == command_type:
             self.stack[-1].append(chara_id, command)
@@ -107,7 +110,7 @@ class Stage:
             new_pos = self.markers[self.occupation_mode][layer_index]
             # TODO: Support kyori
             if old_pos != new_pos:
-                command_capsule.append(f"@move time=\"200\" path=\"({new_pos}, {self.chara_heights[chara_id]}, 255)\" "
+                command_capsule.append(f"@move time=\"200\" path=\"({new_pos}, {self._get_chara_height(chara_id)}, 255)\" "
                                        f"layer=\"{layer_index}\"")
                 wm_count += 1
         command_capsule.extend(['@wm'] * wm_count)
@@ -122,7 +125,7 @@ class Stage:
             self.stance_record[chara_id] = fg_file.name
             self.stance_counter[chara_id] = 0
             command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" "
-                                    f"top=\"{self.chara_heights[chara_id]}\" storage=\"{fg_file.stem}\" visible=\"true\"")
+                                    f"top=\"{self._get_chara_height(chara_id)}\" storage=\"{fg_file.stem}\" visible=\"true\"")
         command_capsule.append('@trans time="500" method="crossfade"')
         command_capsule.append("@wt")
                 
@@ -140,7 +143,7 @@ class Stage:
             self.stance_record[chara_id] = fg_file.name
             self.stance_counter[chara_id] = 0
             command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" " 
-                            f"top=\"{self.chara_heights[chara_id]}\" storage=\"{fg_file.stem}\" visible=\"true\"")
+                            f"top=\"{self._get_chara_height(chara_id)}\" storage=\"{fg_file.stem}\" visible=\"true\"")
         command_capsule.append('@trans time="500" method="crossfade"')
         command_capsule.append("@wt")
             
@@ -174,7 +177,7 @@ class Stage:
                 command_capsule.append(f"@copylay destlayer=\"{new_layer_index}\" srclayer=\"{old_layer_index}\"")
                 command_capsule.append(f"@freeimage layer={old_layer_index}")
             if old_pos != new_pos:
-                command_capsule.append(f"@move time=200 path=\"({new_pos}, {self.chara_heights[chara_id]}, 255)\" "
+                command_capsule.append(f"@move time=200 path=\"({new_pos}, {self._get_chara_height(chara_id)}, 255)\" "
                                        f"layer=\"{new_layer_index}\"")
                 wm_count += 1
         command_capsule.extend(['@wm'] * wm_count)
@@ -191,7 +194,7 @@ class Stage:
             fg_file = expected_fg_file[0]
             self.stance_counter[chara_id] = 0
             self.writeln(f"@image left=\"{pos}\" page=\"back\" layer=\"{layer_index}\" "
-                            f"top=\"{self.chara_heights[chara_id]}\" storage=\"{fg_file.stem}\" visible=\"true\"")
+                            f"top=\"{self._get_chara_height(chara_id)}\" storage=\"{fg_file.stem}\" visible=\"true\"")
 
     def clear_fg(self, page: str='back'):
         for layer_index, chara_id in enumerate(self.stage_occupation):
