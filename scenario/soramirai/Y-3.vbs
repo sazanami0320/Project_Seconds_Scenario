@@ -628,7 +628,7 @@ shizune(微笑) 学姐，不知道我能不能给你的“计划”，帮上什�
 yukie(微笑) 当然，我们的计划又怎么能少了小静音你呢？
 yukie 如何能够引导学弟说出自己的想法，还不被他识破，可全要靠你了。
 yukie 我的计划，是这样的……
-[transform=scan_down_to_up, background=ward_1, tachie=yukie(微笑)]
+[transform=scan_down_to_up, background=ward_2, tachie=yukie(微笑)]
 kenichi ……
 kenichi ……所以，这就是你们的计划？
 yukie(微笑) 嗯，是的。
