@@ -144,12 +144,6 @@ class Stage:
             self.stance_counter[chara_id] = 0
             command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" " 
                             f"top=\"{self._get_chara_height(chara_id)}\" storage=\"{fg_file.stem}\" visible=\"true\"")
-        for layer_index, chara_id in enumerate(self.stage_occupation):
-            if chara_id is None or chara_id in commands:
-                continue
-            chara_pos = self.markers[self.occupation_mode][layer_index]
-            command_capsule.append(f"@image left=\"{chara_pos}\" page=\"back\" layer=\"{layer_index}\" " 
-                            f"top=\"{self._get_chara_height(chara_id)}\" storage=\"{self.stance_record[chara_id].split('.')[0]}\" visible=\"true\"")
         command_capsule.append('@trans time="500" method="crossfade"')
         command_capsule.append("@wt")
             
